@@ -57,6 +57,8 @@ class Player(object):
         self.jump_count = 10
         self.standing = False
         self.idle = True
+        self.hitbox = (self.x, self.y, 28, 60)
+        # ^ this is init, not how hitbox will be drawn
 
     def draw(self, win):
         if self.walk_count + 1 >= 27:
@@ -90,6 +92,8 @@ class Player(object):
                     win.blit(walk_right[5], (self.x, self.y))
                 else:
                     win.blit(walk_left[5], (self.x, self.y))
+        self.hitbox = (self.x + 10, self.y + 15, 50, 40)
+        pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
 
 class Attack(object):
     def __init__(self, x, y, radius, color, facing):
@@ -136,6 +140,8 @@ class Enemy(object):
         self.path = [self.x, self.end]
         self.walk_count = 0
         self.vel = 3
+        self.hitbox = (self.x + 20, self.y, 28, 60)
+        # ^ this is init, not how hitbox will be drawn
     
     def draw(self, win):
         self.move()
@@ -148,6 +154,9 @@ class Enemy(object):
         else:
             win.blit(self.fly_left[self.walk_count //3], (self.x, self.y))
             self.walk_count += 1
+        
+        self.hitbox = (self.x + 20, self.y + 20, 30, 30)
+        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
     def move(self):
         if self.vel > 0:
@@ -163,22 +172,9 @@ class Enemy(object):
                 self.vel = self.vel * -1
                 self.walk_count = 0
 
-
-
-# GEN. VARIABLES
-# x = 50
-# y = 525
-# width = 64
-# height = 64
-# vel = 5
-
-# PLAY VARIABLES
-# left = False
-# right = False
-# walk_count = 0
-
-# is_jumping = False
-# jump_count = 10
+    def hit(self):
+        print('hit')
+        pass
 
 # DRAW FUNCTION
 def redraw_game_window():
@@ -192,6 +188,7 @@ def redraw_game_window():
 # MAIN LOOP
 george = Player(50, 525, 64, 64)
 bird = Enemy(200, 385, 64, 64, 1000)
+atk_loop = 0 # our attack cool down
 bullets = []
 running = True
 
@@ -199,11 +196,21 @@ while running:
     # pygame.time.delay(35)
     clock.tick(27)
 
+    if atk_loop > 0:
+        atk_loop += 1
+    if atk_loop > 3:
+        atk_loop = 0
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     for bullet in bullets:
+        if bullet.y - bullet.radius < bird.hitbox[1] + bird.hitbox[3] and bullet.y + bullet.radius > bird.hitbox[1]:
+            if bullet.x + bullet.radius > bird.hitbox[0] and bullet.x - bullet.radius < bird.hitbox[0] + bird.hitbox[2]:
+                bird.hit
+                bullets.pop(bullets.index(bullet))
+
         if bullet.x < george.x + 74 and bullet.x > george.x - 16:
             bullet.x += bullet.vel
         else:
@@ -211,7 +218,7 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_SPACE]:
+    if keys[pygame.K_SPACE] and atk_loop == 0:
         if george.left:
             facing = -1
         else:
@@ -227,6 +234,7 @@ while running:
                     facing
                 )
             )
+        atk_loop = 1
 
     if keys[pygame.K_LEFT] and george.x > george.vel:
         george.x -= george.vel
