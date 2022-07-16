@@ -39,57 +39,75 @@ atk_r = pygame.image.load('assets/AttackR.png')
 # CLOCK/FPS
 clock = pygame.time.Clock()
 
+# CHARACTER CLASSES
+class Player(object):
+    def __init__(self, x, y, width, height):
+        # GEN. VARIABLES
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+        # PLAY VARIABLES
+        self.vel = 5
+        self.left = False
+        self.right = False
+        self.walk_count = 0
+        self.is_jumping = False
+        self.jump_count = 10
+
+    def draw(self, win):
+        if self.walk_count + 1 >= 27:
+            self.walk_count = 0
+
+        if self.left:
+            if not self.is_jumping:
+                self.vel = 5
+                win.blit(walk_left[self.walk_count//3], (self.x, self.y))
+                self.walk_count += 1
+            elif self.is_jumping:
+                self.vel = 10
+                win.blit(jump_l, (self.x, self.y))
+                self.walk_count += 1
+        elif self.right:
+            if not self.is_jumping:
+                self.vel = 5
+                win.blit(walk_right[self. walk_count//3], (self.x, self.y))
+                self.walk_count += 1
+            elif self.is_jumping:
+                self.vel = 10
+                win.blit(jump_r, (self.x, self.y))
+                self.walk_count += 1
+        elif self.is_jumping:
+            win.blit(jump_r, (self.x, self.y))
+        else:
+            win.blit(idle, (self.x, self.y))
+            self.walk_count = 0
+
+
 # GEN. VARIABLES
-x = 50
-y = 525
-width = 64
-height = 64
-vel = 5
+# x = 50
+# y = 525
+# width = 64
+# height = 64
+# vel = 5
 
 # PLAY VARIABLES
-left = False
-right = False
-walk_count = 0
+# left = False
+# right = False
+# walk_count = 0
 
-is_jumping = False
-jump_count = 10
+# is_jumping = False
+# jump_count = 10
 
 # DRAW FUNCTION
 def redraw_game_window():
-    global walk_count
-    global vel
     win.blit(bg, (0, 0))
-
-    if walk_count + 1 >= 27:
-        walk_count = 0
-    
-    if left:
-        if not is_jumping:
-            vel = 5
-            win.blit(walk_left[walk_count//3], (x, y))
-            walk_count += 1
-        elif is_jumping:
-            vel = 10
-            win.blit(jump_l, (x, y))
-            walk_count += 1
-    elif right:
-        if not is_jumping:
-            vel = 5
-            win.blit(walk_right[walk_count//3], (x, y))
-            walk_count += 1
-        elif is_jumping:
-            vel = 10
-            win.blit(jump_r, (x, y))
-            walk_count += 1
-    elif is_jumping:
-        win.blit(jump_r, (x, y))
-    else:
-        win.blit(idle, (x, y))
-        walk_count = 0
-
+    george.draw(win)
     pygame.display.update()
 
 # MAIN LOOP
+george = Player(50, 525, 64, 64)
 running = True
 
 while running:
@@ -102,37 +120,37 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_LEFT] and x > vel:
-        x -= vel
-        left = True
-        right = False
-    elif keys[pygame.K_RIGHT] and x < 1200 - (width + vel):
-        x += vel
-        left = False
-        right = True
+    if keys[pygame.K_LEFT] and george.x > george.vel:
+        george.x -= george.vel
+        george.left = True
+        george.right = False
+    elif keys[pygame.K_RIGHT] and george.x < 1200 - (george.width + george.vel):
+        george.x += george.vel
+        george.left = False
+        george.right = True
     else:
-        right = False
-        left = False
-        walk_count = 0
+        george.right = False
+        george.left = False
+        george.walk_count = 0
 
-    if not(is_jumping):
+    if not(george.is_jumping):
         if keys[pygame.K_SPACE]:
-            is_jumping = True
+            george.is_jumping = True
             # right = False
             # left = False
-            walk_count = 0
+            george.walk_count = 0
     else:
-        if jump_count >= -10:
-            y -= (jump_count * abs(jump_count)) * 0.5
-            jump_count -= 1
+        if george.jump_count >= -10:
+            george.y -= (george.jump_count * abs(george.jump_count)) * 0.5
+            george.jump_count -= 1
             # neg = 1
             # if jump_count < 0:
             #     neg = -1
             # y -= (jump_count ** 2) * 0.5 * neg
             # jump_count -= 1
         else:
-            is_jumping = False
-            jump_count = 10
+            george.is_jumping = False
+            george.jump_count = 10
 
     redraw_game_window()
 
