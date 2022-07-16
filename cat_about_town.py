@@ -61,6 +61,7 @@ class Player(object):
     def draw(self, win):
         if self.walk_count + 1 >= 27:
             self.walk_count = 0
+        # reset once it becomes the number of images times 3... to be able to cycle them below
         
         if self.idle:
             win.blit(idle, (self.x, self.y))
@@ -102,6 +103,67 @@ class Attack(object):
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
 
+class Enemy(object):
+    fly_right = [
+        pygame.image.load('assets/R1.png'),
+        pygame.image.load('assets/R2.png'),
+        pygame.image.load('assets/R3.png'),
+        pygame.image.load('assets/R4.png'),
+        pygame.image.load('assets/R5.png'),
+        pygame.image.load('assets/R6.png'),
+        pygame.image.load('assets/R7.png'),
+        pygame.image.load('assets/R8.png'),
+        pygame.image.load('assets/R9.png')
+    ]
+    fly_left = [
+        pygame.image.load('assets/L1.png'),
+        pygame.image.load('assets/L2.png'),
+        pygame.image.load('assets/L3.png'),
+        pygame.image.load('assets/L4.png'),
+        pygame.image.load('assets/L5.png'),
+        pygame.image.load('assets/L6.png'),
+        pygame.image.load('assets/L7.png'),
+        pygame.image.load('assets/L8.png'),
+        pygame.image.load('assets/L9.png')
+    ]
+
+    def __init__(self, x, y, width, height, end):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.end = end
+        self.path = [self.x, self.end]
+        self.walk_count = 0
+        self.vel = 3
+    
+    def draw(self, win):
+        self.move()
+        if self.walk_count + 1 >= 27:
+            self.walk_count = 0
+        
+        if self.vel > 0:
+            win.blit(self.fly_right[self.walk_count //3], (self.x, self.y))
+            self.walk_count += 1
+        else:
+            win.blit(self.fly_left[self.walk_count //3], (self.x, self.y))
+            self.walk_count += 1
+
+    def move(self):
+        if self.vel > 0:
+            if self.x + self.vel < self.path[1]:
+                self.x += self.vel
+            else:
+                self.vel = self.vel * -1
+                self.walk_count = 0
+        else:
+            if self.x - self.vel > self.path[0]:
+                self.x += self.vel
+            else:
+                self.vel = self.vel * -1
+                self.walk_count = 0
+
+
 
 # GEN. VARIABLES
 # x = 50
@@ -122,12 +184,14 @@ class Attack(object):
 def redraw_game_window():
     win.blit(bg, (0, 0))
     george.draw(win)
+    bird.draw(win)
     for bullet in bullets:
         bullet.draw(win)
     pygame.display.update()
 
 # MAIN LOOP
 george = Player(50, 525, 64, 64)
+bird = Enemy(200, 385, 64, 64, 1000)
 bullets = []
 running = True
 
