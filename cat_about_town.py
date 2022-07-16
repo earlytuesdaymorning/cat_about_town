@@ -78,7 +78,7 @@ class Player(object):
                 elif self.right:
                     if not self.is_jumping:
                         self.vel = 5
-                        win.blit(walk_right[self. walk_count//3], (self.x, self.y))
+                        win.blit(walk_right[self.walk_count//3], (self.x, self.y))
                         self.walk_count += 1
                     elif self.is_jumping:
                         self.vel = 10
@@ -92,7 +92,7 @@ class Player(object):
                 else:
                     win.blit(walk_left[5], (self.x, self.y))
 
-class Projectile(object):
+class Attack(object):
     def __init__(self, x, y, radius, color, facing):
         self.x = x
         self.y = y
@@ -142,21 +142,32 @@ while running:
             running = False
 
     for bullet in bullets:
-        if bullet.x < 1200 and bullet.x > 0:
+        if bullet.x < george.x + 74 and bullet.x > george.x - 16:
             bullet.x += bullet.vel
         else:
             bullets.pop(bullets.index(bullet))
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_b]:
+    if keys[pygame.K_SPACE]:
         if george.left:
             facing = -1
         else:
             facing = 1
 
-        if len(bullets) < 5:
-            bullets.append(Projectile(round(george.x + george.width //2), round(george.y + george.height //2), 6, (0, 0, 0), facing))
+        if len(bullets) < 10:
+            bullets.append(
+                Attack(
+                    round(george.x + george.width //2), 
+                    round(george.y + george.height //2), 
+                    6, 
+                    (0, 0, 0), 
+                    facing
+                )
+            )
+        # elif len(bullets) > 1:
+            
+
 
     if keys[pygame.K_LEFT] and george.x > george.vel:
         george.x -= george.vel
@@ -175,7 +186,7 @@ while running:
         george.standing = True
 
     if not(george.is_jumping):
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_UP]:
             george.is_jumping = True
             # right = False
             # left = False
