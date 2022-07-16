@@ -124,10 +124,13 @@ class Projectile(object):
 def redraw_game_window():
     win.blit(bg, (0, 0))
     george.draw(win)
+    for bullet in bullets:
+        bullet.draw(win)
     pygame.display.update()
 
 # MAIN LOOP
 george = Player(50, 525, 64, 64)
+bullets = []
 running = True
 
 while running:
@@ -138,7 +141,22 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    for bullet in bullets:
+        if bullet.x < 1200 and bullet.x > 0:
+            bullet.x += bullet.vel
+        else:
+            bullets.pop(bullets.index(bullet))
+
     keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_b]:
+        if george.left:
+            facing = -1
+        else:
+            facing = 1
+
+        if len(bullets) < 5:
+            bullets.append(Projectile(round(george.x + george.width //2), round(george.y + george.height //2), 6, (0, 0, 0), facing))
 
     if keys[pygame.K_LEFT] and george.x > george.vel:
         george.x -= george.vel
