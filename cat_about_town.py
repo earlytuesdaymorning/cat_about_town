@@ -39,7 +39,7 @@ atk_r = pygame.image.load('assets/AttackR.png')
 # CLOCK/FPS
 clock = pygame.time.Clock()
 
-# CHARACTER CLASSES
+# OBJECT CLASSES
 class Player(object):
     def __init__(self, x, y, width, height):
         # GEN. VARIABLES
@@ -55,34 +55,42 @@ class Player(object):
         self.walk_count = 0
         self.is_jumping = False
         self.jump_count = 10
+        self.standing = False
+        self.idle = True
 
     def draw(self, win):
         if self.walk_count + 1 >= 27:
             self.walk_count = 0
-
-        if self.left:
-            if not self.is_jumping:
-                self.vel = 5
-                win.blit(walk_left[self.walk_count//3], (self.x, self.y))
-                self.walk_count += 1
-            elif self.is_jumping:
-                self.vel = 10
-                win.blit(jump_l, (self.x, self.y))
-                self.walk_count += 1
-        elif self.right:
-            if not self.is_jumping:
-                self.vel = 5
-                win.blit(walk_right[self. walk_count//3], (self.x, self.y))
-                self.walk_count += 1
-            elif self.is_jumping:
-                self.vel = 10
-                win.blit(jump_r, (self.x, self.y))
-                self.walk_count += 1
-        elif self.is_jumping:
-            win.blit(jump_r, (self.x, self.y))
-        else:
+        
+        if self.idle:
             win.blit(idle, (self.x, self.y))
-            self.walk_count = 0
+        else:
+            if not self.standing:
+                if self.left:
+                    if not self.is_jumping:
+                        self.vel = 5
+                        win.blit(walk_left[self.walk_count//3], (self.x, self.y))
+                        self.walk_count += 1
+                    elif self.is_jumping:
+                        self.vel = 10
+                        win.blit(jump_l, (self.x, self.y))
+                        self.walk_count += 1
+                elif self.right:
+                    if not self.is_jumping:
+                        self.vel = 5
+                        win.blit(walk_right[self. walk_count//3], (self.x, self.y))
+                        self.walk_count += 1
+                    elif self.is_jumping:
+                        self.vel = 10
+                        win.blit(jump_r, (self.x, self.y))
+                        self.walk_count += 1
+                elif self.is_jumping:
+                    win.blit(jump_r, (self.x, self.y))
+            else:
+                if self.right:
+                    win.blit(walk_right[5], (self.x, self.y))
+                else:
+                    win.blit(walk_left[5], (self.x, self.y))
 
 class Projectile(object):
     def __init__(self, x, y, radius, color, facing):
@@ -136,14 +144,17 @@ while running:
         george.x -= george.vel
         george.left = True
         george.right = False
+        george.standing = False
+        george.idle = False
     elif keys[pygame.K_RIGHT] and george.x < 1200 - (george.width + george.vel):
         george.x += george.vel
         george.left = False
         george.right = True
+        george.standing = False
+        george.idle = False
     else:
-        george.right = False
-        george.left = False
         george.walk_count = 0
+        george.standing = True
 
     if not(george.is_jumping):
         if keys[pygame.K_SPACE]:
@@ -151,6 +162,7 @@ while running:
             # right = False
             # left = False
             george.walk_count = 0
+            george.idle = False
     else:
         if george.jump_count >= -10:
             george.y -= (george.jump_count * abs(george.jump_count)) * 0.5
