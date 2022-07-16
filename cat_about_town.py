@@ -84,8 +84,6 @@ class Player(object):
                         self.vel = 10
                         win.blit(jump_r, (self.x, self.y))
                         self.walk_count += 1
-                elif self.is_jumping:
-                    win.blit(jump_r, (self.x, self.y))
             else:
                 if self.right:
                     win.blit(walk_right[5], (self.x, self.y))
@@ -165,9 +163,6 @@ while running:
                     facing
                 )
             )
-        # elif len(bullets) > 1:
-            
-
 
     if keys[pygame.K_LEFT] and george.x > george.vel:
         george.x -= george.vel
@@ -196,6 +191,7 @@ while running:
         if george.jump_count >= -10:
             george.y -= (george.jump_count * abs(george.jump_count)) * 0.5
             george.jump_count -= 1
+            george.standing = False
             # neg = 1
             # if jump_count < 0:
             #     neg = -1
