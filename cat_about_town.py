@@ -57,17 +57,32 @@ jump_count = 10
 # DRAW FUNCTION
 def redraw_game_window():
     global walk_count
+    global vel
     win.blit(bg, (0, 0))
 
     if walk_count + 1 >= 27:
         walk_count = 0
     
     if left:
-        win.blit(walk_left[walk_count//3], (x, y))
-        walk_count += 1
+        if not is_jumping:
+            vel = 5
+            win.blit(walk_left[walk_count//3], (x, y))
+            walk_count += 1
+        elif is_jumping:
+            vel = 10
+            win.blit(jump_l, (x, y))
+            walk_count += 1
     elif right:
-        win.blit(walk_right[walk_count//3], (x, y))
-        walk_count += 1
+        if not is_jumping:
+            vel = 5
+            win.blit(walk_right[walk_count//3], (x, y))
+            walk_count += 1
+        elif is_jumping:
+            vel = 10
+            win.blit(jump_r, (x, y))
+            walk_count += 1
+    elif is_jumping:
+        win.blit(jump_r, (x, y))
     else:
         win.blit(idle, (x, y))
         walk_count = 0
@@ -103,8 +118,8 @@ while running:
     if not(is_jumping):
         if keys[pygame.K_SPACE]:
             is_jumping = True
-            right = False
-            left = False
+            # right = False
+            # left = False
             walk_count = 0
     else:
         if jump_count >= -10:
