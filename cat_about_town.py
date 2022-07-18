@@ -101,7 +101,7 @@ class Player(object):
                         win.blit(walk_left[5], (self.x, self.y))
 
         self.hitbox = (self.x + 10, self.y + 15, 50, 40)
-        pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
+        # pygame.draw.rect(win, (255,0,0), self.hitbox, 2) - visually not needed unless testing
 
 class Attack(object):
     def __init__(self, x, y, radius, color, facing):
@@ -140,21 +140,26 @@ class RedBird(object):
         self.vel = 3
         self.hitbox = (self.x + 20, self.y, 28, 60)
         # ^ this is init, not how hitbox will be drawn
+        self.health = 5
+        self.visible = True
     
     def draw(self, win):
         self.move()
-        if self.walk_count + 1 >= 12:
-            self.walk_count = 0
-        
-        if self.vel > 0:
-            win.blit(self.fly_right[self.walk_count //3], (self.x, self.y))
-            self.walk_count += 1
-        else:
-            win.blit(self.fly_left[self.walk_count //3], (self.x, self.y))
-            self.walk_count += 1
-        
-        self.hitbox = (self.x + 16, self.y + 18, 30, 30)
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+        if self.visible:
+            if self.walk_count + 1 >= 12:
+                self.walk_count = 0
+            
+            if self.vel > 0:
+                win.blit(self.fly_right[self.walk_count //3], (self.x, self.y))
+                self.walk_count += 1
+            else:
+                win.blit(self.fly_left[self.walk_count //3], (self.x, self.y))
+                self.walk_count += 1
+            
+            pygame.draw.rect(win, (255, 0, 0), (self.hitbox[0] - 7, self.hitbox[1] - 20, 50, 10))
+            pygame.draw.rect(win, (0, 140, 0), (self.hitbox[0] - 7, self.hitbox[1] - 20, 50 - (10 * (5 - self.health)), 10))
+            self.hitbox = (self.x + 16, self.y + 18, 30, 30)
+            # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
     def move(self):
         if self.vel > 0:
@@ -171,6 +176,10 @@ class RedBird(object):
                 self.walk_count = 0
 
     def hit(self):
+        if self.health > 1:
+            self.health -= 1
+        else:
+            self.visible = False
         print('hit')
 
 
@@ -199,21 +208,26 @@ class BrownBird(object):
         self.vel = 3
         self.hitbox = (self.x + 20, self.y, 28, 60)
         # ^ this is init, not how hitbox will be drawn
+        self.health = 5
+        self.visible = True
 
     def draw(self, win):
         self.move()
-        if self.walk_count + 1 >= 12:
-            self.walk_count = 0
+        if self.visible:
+            if self.walk_count + 1 >= 12:
+                self.walk_count = 0
 
-        if self.vel > 0:
-            win.blit(self.fly_right[self.walk_count // 3], (self.x, self.y))
-            self.walk_count += 1
-        else:
-            win.blit(self.fly_left[self.walk_count // 3], (self.x, self.y))
-            self.walk_count += 1
+            if self.vel > 0:
+                win.blit(self.fly_right[self.walk_count // 3], (self.x, self.y))
+                self.walk_count += 1
+            else:
+                win.blit(self.fly_left[self.walk_count // 3], (self.x, self.y))
+                self.walk_count += 1
 
-        self.hitbox = (self.x + 16, self.y + 18, 30, 30)
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+            pygame.draw.rect(win, (255, 0, 0), (self.hitbox[0] - 7, self.hitbox[1] - 20, 50, 10))
+            pygame.draw.rect(win, (0, 140, 0), (self.hitbox[0] - 7, self.hitbox[1] - 20, 50 - (10 * (5 - self.health)), 10))
+            self.hitbox = (self.x + 16, self.y + 18, 30, 30)
+            # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
     def move(self):
         if self.vel > 0:
@@ -230,6 +244,10 @@ class BrownBird(object):
                 self.walk_count = 0
 
     def hit(self):
+        if self.health > 1:
+            self.health -= 1
+        else:
+            self.visible = False
         print('hit')
 
 
@@ -260,21 +278,26 @@ class Rat(object):
         self.vel = 3
         self.hitbox = (self.x + 20, self.y, 28, 60)
         # ^ this is init, not how hitbox will be drawn
+        self.health = 5
+        self.visible = True
 
     def draw(self, win):
         self.move()
-        if self.walk_count + 1 >= 15:
-            self.walk_count = 0
+        if self.visible:
+            if self.walk_count + 1 >= 15:
+                self.walk_count = 0
 
-        if self.vel > 0:
-            win.blit(self.run_right[self.walk_count // 3], (self.x, self.y))
-            self.walk_count += 1
-        else:
-            win.blit(self.run_left[self.walk_count // 3], (self.x, self.y))
-            self.walk_count += 1
+            if self.vel > 0:
+                win.blit(self.run_right[self.walk_count // 3], (self.x, self.y))
+                self.walk_count += 1
+            else:
+                win.blit(self.run_left[self.walk_count // 3], (self.x, self.y))
+                self.walk_count += 1
 
-        self.hitbox = (self.x + 16, self.y + 18, 30, 30)
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+            pygame.draw.rect(win, (195, 0, 0), (self.hitbox[0] - 9, self.hitbox[1] - 20, 50, 10))
+            pygame.draw.rect(win, (0, 140, 0), (self.hitbox[0] - 9, self.hitbox[1] - 20, 50 - (10 * (5 - self.health)), 10))
+            self.hitbox = (self.x + 16, self.y + 18, 30, 30)
+            # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
     def move(self):
         if self.vel > 0:
@@ -291,12 +314,18 @@ class Rat(object):
                 self.walk_count = 0
 
     def hit(self):
+        if self.health > 1:
+            self.health -= 1
+        else:
+            self.visible = False
         print('hit')
 
 
 # DRAW FUNCTION
 def redraw_game_window():
     win.blit(bg, (0, 0))
+    text = font.render('Score: ' + str(score) , 1, (0, 0, 0))
+    win.blit(text, (1000, 15))
     george.draw(win)
     red_bird.draw(win)
     brown_bird.draw(win)
@@ -306,6 +335,7 @@ def redraw_game_window():
     pygame.display.update()
 
 # MAIN LOOP
+font = pygame.font.SysFont('arial', 32, True)
 george = Player(50, 525, 64, 64)
 red_bird = RedBird(90, 185, 64, 64, 850)
 brown_bird = BrownBird(200, 385, 64, 64, 1080)
@@ -329,16 +359,22 @@ while running:
 
     for bullet in bullets:
         if bullet.y - bullet.radius < red_bird.hitbox[1] + red_bird.hitbox[3] and bullet.y + bullet.radius > red_bird.hitbox[1]:
-            if bullet.x + bullet.radius > red_bird.hitbox[0] and bullet.x - bullet.radius < red_bird.hitbox[0] + red_bird.hitbox[2]:
-                red_bird.hit
-                bullets.pop(bullets.index(bullet))
-        elif bullet.y - bullet.radius < brown_bird.hitbox[1] + brown_bird.hitbox[3] and bullet.y + bullet.radius > brown_bird.hitbox[1]:
+            if red_bird.health > 1:
+                if bullet.x + bullet.radius > red_bird.hitbox[0] and bullet.x - bullet.radius < red_bird.hitbox[0] + red_bird.hitbox[2]:
+                    red_bird.hit()
+                    score += 1
+                    bullets.pop(bullets.index(bullet))
+            else:
+                red_bird.visible = False
+        elif bullet.y - bullet.radius < brown_bird.hitbox[1] + brown_bird.hitbox[3] and bullet.y + bullet.radius > brown_bird.hitbox[1]:  
             if bullet.x + bullet.radius > brown_bird.hitbox[0] and bullet.x - bullet.radius < brown_bird.hitbox[0] + brown_bird.hitbox[2]:
-                brown_bird.hit
+                brown_bird.hit()
+                score += 1
                 bullets.pop(bullets.index(bullet))
-        elif bullet.y - bullet.radius < rat.hitbox[1] + rat.hitbox[3] and bullet.y + bullet.radius > rat.hitbox[1]:
+        elif bullet.y - bullet.radius < rat.hitbox[1] + rat.hitbox[3] and bullet.y + bullet.radius > rat.hitbox[1]:  
             if bullet.x + bullet.radius > rat.hitbox[0] and bullet.x - bullet.radius < rat.hitbox[0] + rat.hitbox[2]:
-                rat.hit
+                rat.hit()
+                score += 1
                 bullets.pop(bullets.index(bullet))
 
         if bullet.x < george.x + 74 and bullet.x > george.x - 16 and bullet.y < george.y + 74 and bullet.y > george.y - 16:
@@ -360,7 +396,7 @@ while running:
                     round(george.x + george.width //2), 
                     round(george.y + george.height //2), 
                     12, 
-                    (0, 0, 0), 
+                    (177, 208, 212), 
                     facing
                 )
             )
