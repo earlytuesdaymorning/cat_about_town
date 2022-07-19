@@ -368,22 +368,25 @@ while running:
     for bullet in bullets:
         if bullet.y - bullet.radius < red_bird.hitbox[1] + red_bird.hitbox[3] and bullet.y + bullet.radius > red_bird.hitbox[1]:
             if bullet.x + bullet.radius > red_bird.hitbox[0] and bullet.x - bullet.radius < red_bird.hitbox[0] + red_bird.hitbox[2]:
-                red_bird.hit()
-                chirp.play()
-                score += 1
-                bullets.pop(bullets.index(bullet))
+                if red_bird.visible == True:
+                    red_bird.hit()
+                    chirp.play()
+                    score += 1
+                    bullets.pop(bullets.index(bullet))
         elif bullet.y - bullet.radius < brown_bird.hitbox[1] + brown_bird.hitbox[3] and bullet.y + bullet.radius > brown_bird.hitbox[1]:  
             if bullet.x + bullet.radius > brown_bird.hitbox[0] and bullet.x - bullet.radius < brown_bird.hitbox[0] + brown_bird.hitbox[2]:
-                brown_bird.hit()
-                chirp.play()
-                score += 1
-                bullets.pop(bullets.index(bullet))
+                if brown_bird.visible == True:
+                    brown_bird.hit()
+                    chirp.play()
+                    score += 1
+                    bullets.pop(bullets.index(bullet))
         elif bullet.y - bullet.radius < rat.hitbox[1] + rat.hitbox[3] and bullet.y + bullet.radius > rat.hitbox[1]:  
             if bullet.x + bullet.radius > rat.hitbox[0] and bullet.x - bullet.radius < rat.hitbox[0] + rat.hitbox[2]:
-                rat.hit()
-                squeak.play()
-                score += 1
-                bullets.pop(bullets.index(bullet))
+                if rat.visible == True:
+                    rat.hit()
+                    squeak.play()
+                    score += 1
+                    bullets.pop(bullets.index(bullet))
 
         if bullet.x < george.x + 74 and bullet.x > george.x - 16 and bullet.y < george.y + 74 and bullet.y > george.y - 16:
             bullet.x += bullet.vel
