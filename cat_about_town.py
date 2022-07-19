@@ -36,6 +36,13 @@ bg = pygame.image.load('assets/bg.png')
 atk_l = pygame.image.load('assets/AttackL.png')
 atk_r = pygame.image.load('assets/AttackR.png')
 
+# SOUND IMPORTS
+squeak = pygame.mixer.Sound('assets/sounds/mouse.wav')
+chirp = pygame.mixer.Sound('assets/sounds/bird.wav')
+
+music = pygame.mixer.music.load("assets/sounds/music.wav")
+pygame.mixer.music.play(-1)
+
 # CLOCK/FPS
 clock = pygame.time.Clock()
 
@@ -334,6 +341,7 @@ def redraw_game_window():
         bullet.draw(win)
     pygame.display.update()
 
+
 # MAIN LOOP
 font = pygame.font.SysFont('arial', 32, True)
 george = Player(50, 525, 64, 64)
@@ -359,21 +367,21 @@ while running:
 
     for bullet in bullets:
         if bullet.y - bullet.radius < red_bird.hitbox[1] + red_bird.hitbox[3] and bullet.y + bullet.radius > red_bird.hitbox[1]:
-            if red_bird.health > 1:
-                if bullet.x + bullet.radius > red_bird.hitbox[0] and bullet.x - bullet.radius < red_bird.hitbox[0] + red_bird.hitbox[2]:
-                    red_bird.hit()
-                    score += 1
-                    bullets.pop(bullets.index(bullet))
-            else:
-                red_bird.visible = False
+            if bullet.x + bullet.radius > red_bird.hitbox[0] and bullet.x - bullet.radius < red_bird.hitbox[0] + red_bird.hitbox[2]:
+                red_bird.hit()
+                chirp.play()
+                score += 1
+                bullets.pop(bullets.index(bullet))
         elif bullet.y - bullet.radius < brown_bird.hitbox[1] + brown_bird.hitbox[3] and bullet.y + bullet.radius > brown_bird.hitbox[1]:  
             if bullet.x + bullet.radius > brown_bird.hitbox[0] and bullet.x - bullet.radius < brown_bird.hitbox[0] + brown_bird.hitbox[2]:
                 brown_bird.hit()
+                chirp.play()
                 score += 1
                 bullets.pop(bullets.index(bullet))
         elif bullet.y - bullet.radius < rat.hitbox[1] + rat.hitbox[3] and bullet.y + bullet.radius > rat.hitbox[1]:  
             if bullet.x + bullet.radius > rat.hitbox[0] and bullet.x - bullet.radius < rat.hitbox[0] + rat.hitbox[2]:
                 rat.hit()
+                squeak.play()
                 score += 1
                 bullets.pop(bullets.index(bullet))
 
