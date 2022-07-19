@@ -66,7 +66,7 @@ class Player(object):
         self.jump_count = 10
         self.standing = False
         self.idle = True
-        self.hitbox = (self.x, self.y, 28, 60)
+        self.hitbox = (self.x + 10, self.y + 15, 50, 47)
         # ^ this is init, not how hitbox will be drawn
 
     def draw(self, win):
@@ -107,8 +107,8 @@ class Player(object):
                     else:
                         win.blit(walk_left[5], (self.x, self.y))
 
-        self.hitbox = (self.x + 10, self.y + 15, 50, 40)
-        # pygame.draw.rect(win, (255,0,0), self.hitbox, 2) - visually not needed unless testing
+        self.hitbox = (self.x + 10, self.y + 15, 50, 47)
+        # pygame.draw.rect(win, (255,0,0), self.hitbox, 2) # - visually not needed unless testing
 
 class Attack(object):
     def __init__(self, x, y, radius, color, facing):
@@ -118,6 +118,7 @@ class Attack(object):
         self.color = color
         self.facing = facing
         self.vel = 8 * facing
+        self.visible = False
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
@@ -328,6 +329,8 @@ class Rat(object):
         print('hit')
 
 
+
+
 # DRAW FUNCTION
 def redraw_game_window():
     win.blit(bg, (0, 0))
@@ -338,7 +341,8 @@ def redraw_game_window():
     brown_bird.draw(win)
     rat.draw(win)
     for bullet in bullets:
-        bullet.draw(win)
+        if bullet.visible:
+            bullet.draw(win)
     pygame.display.update()
 
 
