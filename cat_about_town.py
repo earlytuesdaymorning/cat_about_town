@@ -110,6 +110,13 @@ class Player(object):
         self.hitbox = (self.x + 10, self.y + 15, 50, 47)
         # pygame.draw.rect(win, (255,0,0), self.hitbox, 2) # - visually not needed unless testing
 
+    def land(self):
+        self.y = stick.hitbox[0] - self.hitbox[0]
+        self.is_jumping = False
+        self.jump_count = 10
+        self.x = 800
+        self.y = 410 - self.height + 4
+
 class Attack(object):
     def __init__(self, x, y, radius, color, facing):
         self.x = x
@@ -328,7 +335,15 @@ class Rat(object):
             self.visible = False
         print('hit')
 
+class Platform(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.hitbox = (self.x, self.y, 104, 5, 2)
 
+    def draw(self, win):
+        pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, 104, 5))
+        self.hitbox = (self.x, self.y, 104, 2)
 
 
 # DRAW FUNCTION
@@ -336,10 +351,11 @@ def redraw_game_window():
     win.blit(bg, (0, 0))
     text = font.render('Score: ' + str(score) , 1, (0, 0, 0))
     win.blit(text, (1000, 15))
-    george.draw(win)
+    stick.draw(win)
     red_bird.draw(win)
     brown_bird.draw(win)
     rat.draw(win)
+    george.draw(win)
     for bullet in bullets:
         if bullet.visible:
             bullet.draw(win)
@@ -348,6 +364,7 @@ def redraw_game_window():
 
 # MAIN LOOP
 font = pygame.font.SysFont('arial', 32, True)
+stick = Platform(800, 410)
 george = Player(50, 525, 64, 64)
 red_bird = RedBird(90, 185, 64, 64, 850)
 brown_bird = BrownBird(200, 385, 64, 64, 1080)
@@ -359,6 +376,12 @@ running = True
 while running:
     # pygame.time.delay(35)
     clock.tick(27)
+
+    if george.is_jumping:
+        if george.hitbox[0] + george.hitbox[2] < stick.hitbox[0] + stick.hitbox[2] and george.hitbox[0] + george.hitbox[2] > stick.hitbox[0]:
+            if george.hitbox[1] + george.hitbox[3] < stick.hitbox[1] and george.hitbox[1] + george.hitbox[3] > 390:
+                george.land()
+                print('land')
 
     if atk_loop > 0:
         atk_loop += 1
