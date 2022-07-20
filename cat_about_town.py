@@ -368,7 +368,7 @@ stick = Platform(800, 410)
 george = Player(50, 525, 64, 64)
 red_bird = RedBird(90, 185, 64, 64, 850)
 brown_bird = BrownBird(200, 385, 64, 64, 1080)
-rat = Rat(450, 535, 64, 64, 1030)
+rat = Rat(450, 543, 64, 64, 1030)
 atk_loop = 0 # our attack cool down
 bullets = []
 running = True
@@ -382,6 +382,11 @@ while running:
             if george.hitbox[1] + george.hitbox[3] < stick.hitbox[1] and george.hitbox[1] + george.hitbox[3] > 390:
                 george.land()
                 print('land')
+# will need to fix if statement below
+    if george.jump_count == 10 and george.y == 410 - george.height + 4:
+        if george.hitbox[0] + george.hitbox[2] < stick.hitbox[0] or george.hitbox[0] > stick.hitbox[0] + stick.hitbox[2]:
+            george.is_jumping = True
+            george.jump_count = -19
 
     if atk_loop > 0:
         atk_loop += 1
@@ -473,6 +478,10 @@ while running:
             #     neg = -1
             # y -= (jump_count ** 2) * 0.5 * neg
             # jump_count -= 1
+        elif george.jump_count == -19:
+            george.y -= (george.jump_count * abs(george.jump_count)) * 0.5
+            george.jump_count -= 1
+            george.standing = False
         else:
             george.is_jumping = False
             george.jump_count = 10
