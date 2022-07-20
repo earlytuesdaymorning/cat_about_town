@@ -342,7 +342,7 @@ class Platform(object):
         self.hitbox = (self.x, self.y, 104, 5, 2)
 
     def draw(self, win):
-        pygame.draw.rect(win, (0, 0, 0), (self.x, self.y, 104, 5))
+        pygame.draw.rect(win, (58, 41, 25), (self.x, self.y, 104, 5))
         self.hitbox = (self.x, self.y, 104, 2)
 
 
@@ -366,8 +366,8 @@ def redraw_game_window():
 font = pygame.font.SysFont('arial', 32, True)
 stick = Platform(800, 410)
 george = Player(50, 525, 64, 64)
-red_bird = RedBird(90, 185, 64, 64, 850)
-brown_bird = BrownBird(200, 385, 64, 64, 1080)
+red_bird = RedBird(400, 185, 64, 64, 1080)
+brown_bird = BrownBird(200, 385, 64, 64, 830)
 rat = Rat(450, 543, 64, 64, 1030)
 atk_loop = 0 # our attack cool down
 bullets = []
